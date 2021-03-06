@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OfferController extends AbstractController
 {
-    #[Route('/offer', name: 'offer')]
+    #[Route('/offer', name: 'offer_index')]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $offers = $entityManager->getRepository(JobOffer::class)
@@ -23,13 +23,12 @@ class OfferController extends AbstractController
     ]);
     }
 
-    #[Route('/offer/apply', name: 'offer apply')]
-    public function apply(Request $request, EntityManagerInterface $entityManager)
+    #[Route('/job_offer/{id}/apply', name: 'offer_apply')]
+    public function apply(int $id, EntityManagerInterface $entityManager)
     {
-        $offerId = $request->get('offerId');
 
         $offer = $entityManager->getRepository(JobOffer::class)
-            ->find($offerId);
+            ->find($id);
 
         return $this->render('offer/apply.html.twig', [
             'offer' => $offer,

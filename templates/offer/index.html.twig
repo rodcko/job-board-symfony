@@ -19,7 +19,7 @@
             <tr>
                 <td>{{ offer.compnay }}</td>
                 <td>{{ offer.title }}</td>
-                <td><a href="/offer/apply?offerId={{ offer.id }}">Apply</a></td>
+                <td><a href="{{ url('offer_apply', { id: offer.id } ) }}">Apply</a></td>
             </tr>
         {% endfor %}
         </tbody>
