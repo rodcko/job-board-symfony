@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class OfferController extends AbstractController
 {
@@ -50,6 +51,22 @@ class OfferController extends AbstractController
         return $this->render('offer/apply.html.twig', [
             'offer' => $offer,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @IsGranted("ROLE_COMPANY_OWNER")
+     * @Route("/company/", name="company_offers_index")
+     * @return Response
+     */
+    public function companyOffers() : Response
+    {
+        $user = $this->getUser();
+        $company = $user->getCompany();
+
+        return $this->render('offer/company_index.html.twig',
+        [
+            'offers' => $company->getJobOffers(),
         ]);
     }
 

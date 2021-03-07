@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\CompanyOwner;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -96,6 +97,9 @@ class AppCustomAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
+        if ($token->getUser() instanceof CompanyOwner) {
+            return new RedirectResponse($this->urlGenerator->generate('company_offers_index'));
+        }
         // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
         throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
