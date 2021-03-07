@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\JobOffer;
+use App\Form\ApplicationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OfferController extends AbstractController
 {
-    #[Route('/offer', name: 'offer_index')]
+    #[Route('/job_offer', name: 'offer_index')]
     public function index(EntityManagerInterface $entityManager): Response
     {
         $offers = $entityManager->getRepository(JobOffer::class)
@@ -24,11 +25,25 @@ class OfferController extends AbstractController
     ]);
     }
 
-    #[Route('/job_offer/{id}/apply', name: 'offer_apply')]
-    public function apply(JobOffer $offer)
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @Route("job_offer/{id}/apply", name="offer_apply")
+    */
+    public function apply(JobOffer $offer, Request  $request)
     {
-        return $this->render('offer/apply', [
+        $form = $this->createForm(ApplicationType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() ) {
+            return new Response('<h1>Your app was received!</h1>');
+        }
+
+        return $this->render('offer/apply.html.twig', [
             'offer' => $offer,
+            'form' => $form->createView(),
         ]);
     }
 
