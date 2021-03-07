@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Applicant;
 use App\Entity\JobOffer;
 use App\Form\ApplicationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,14 +32,19 @@ class OfferController extends AbstractController
      * @return Response
      * @Route("job_offer/{id}/apply", name="offer_apply")
     */
-    public function apply(JobOffer $offer, Request  $request)
+    public function apply(JobOffer $offer, Request  $request, EntityManagerInterface $entityManager)
     {
-        $form = $this->createForm(ApplicationType::class);
+        $applicant = new Applicant();
+        $form = $this->createForm(ApplicationType::class, $applicant);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() ) {
-            return new Response('<h1>Your app was received!</h1>');
+            $entityManager->persist($applicant);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Your application has been received!');
+            return $this->redirectToRoute('offer_index');
         }
 
         return $this->render('offer/apply.html.twig', [

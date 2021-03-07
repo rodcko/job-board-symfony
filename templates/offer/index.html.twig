@@ -1,5 +1,8 @@
 <html>
 <body>
+    {% for m in app.flashes('sucess') %}
+        <p>{{ m }}</p>
+    {% endfor %}
     <table>
         <thead>
             <tr>
