@@ -64,9 +64,12 @@ class OfferController extends AbstractController
         $user = $this->getUser();
         $company = $user->getCompany();
 
+        if (!$company) {
+            return $this->redirectToRoute('company_create');
+        }
         return $this->render('offer/company_index.html.twig',
         [
-            'offers' => $company->getJobOffers(),
+            'offers' => $company ? $company->getJobOffers() : [],
         ]);
     }
 

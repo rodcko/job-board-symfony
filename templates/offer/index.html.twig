@@ -3,6 +3,7 @@
     {% for m in app.flashes('sucess') %}
         <p>{{ m }}</p>
     {% endfor %}
+    <a href="{{ url('app_login') }}">Login</a>
     <table>
         <thead>
             <tr>
