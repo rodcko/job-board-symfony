@@ -35,9 +35,15 @@ class JobOffer
      */
     private $applicants;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $created_at;
+
     public function __construct()
     {
         $this->applicants = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
