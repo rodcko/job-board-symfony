@@ -15,7 +15,9 @@ class ApplicationType extends AbstractType
         $builder
             ->add('name')
             ->add('email')
-            ->add('birthdate')
+            ->add('birthdate', DateType::class, [
+                'widget' => 'single_text',
+            ])
             ->add('save', SubmitType::class)
         ;
     }

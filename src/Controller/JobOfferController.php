@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\JobOffer;
+use App\Entity\Applicant;
+use App\Form\ApplicationType;
 use App\Form\JobOfferType;
 use App\Repository\JobOfferRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -102,4 +105,40 @@ class JobOfferController extends AbstractController
 
         return $this->redirectToRoute('job_offer_index');
     }
+
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @Route("/{id}/apply", name="offer_apply")
+    */
+    public function apply(JobOffer $offer, Request  $request, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    {
+        $applicant = new Applicant();
+        $form = $this->createForm(ApplicationType::class, $applicant);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() ) {
+            $entityManager->persist($applicant);
+            $entityManager->flush();
+
+            $mailer->send(
+                (new Email())
+                    ->from('rodcko@live.com')
+                    ->to($offer->getCompnay()->getOwner()->getEmail())
+                    ->subject('New application received!')
+                    ->html('<p>'.$applicant->getName().' applied for '.$offer->getTitle().'</p><p>Please contact to '.$applicant->getEmail().'</p>')
+            );
+
+            $this->addFlash('success', 'Your application has been received!');
+            return $this->redirectToRoute('offer_index');
+        }
+
+        return $this->render('offer/apply.html.twig', [
+            'offer' => $offer,
+            'form' => $form->createView(),
+        ]);
+    }
+
 }
