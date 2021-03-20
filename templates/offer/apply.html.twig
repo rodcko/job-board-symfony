@@ -1,7 +1,6 @@
-<html>
-<body>
+{% extends 'base.html.twig' %}
+{% block body %}
     You are applying to {{ offer.title }}
     <br/>
     {{ form(form) }}
-</body>
-</html>
+{% endblock %}

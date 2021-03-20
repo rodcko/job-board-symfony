@@ -1,9 +1,6 @@
+{% extends 'base.html.twig' %}
+{% block body %}
 <html>
-<body>
-    {% for m in app.flashes('sucess') %}
-        <p>{{ m }}</p>
-    {% endfor %}
-    <a href="{{ url('app_login') }}">Login</a>
     <table>
         <thead>
             <tr>
@@ -28,5 +25,5 @@
         {% endfor %}
         </tbody>
     </table>
-</body>
+{% endblock %}
 </html>
