@@ -34,10 +34,14 @@ class JobOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'job_offer_new', methods: ['GET', 'POST'])]
+    /**
+     * @IsGranted("ROLE_COMPANY_OWNER")
+     * @Route("/", name="job_offer_new", methods={"GET", "POST"})
+     */
     public function new(Request $request): Response
     {
         $jobOffer = new JobOffer();
+        $jobOffer->setCompnay($this->getUser()->getCompnay());
         $form = $this->createForm(JobOfferType::class, $jobOffer);
         $form->handleRequest($request);
 
@@ -63,7 +67,10 @@ class JobOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'job_offer_edit', methods: ['GET', 'POST'])]
+    /**
+     * @Security("((is_granted('ROLE_COMPANY_OWNER') and jobOffer.getCompany() == user.getCompany()) or is_granted('ROLE_ADMIN')")
+     * @Route("/{id}/edit", name="job_offer_edit", methods={"GET", "POST"})
+     */
     public function edit(Request $request, JobOffer $jobOffer): Response
     {
         $form = $this->createForm(JobOfferType::class, $jobOffer);
@@ -81,7 +88,10 @@ class JobOfferController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'job_offer_delete', methods: ['DELETE'])]
+    /**
+     * @Security("((is_granted('ROLE_COMPANY_OWNER') and jobOffer.getCompany() == user.getCompany()) or is_granted('ROLE_ADMIN')")
+     * @Route("/{id}", name="job_offer_delete", methods={"DELETE"})
+     */
     public function delete(Request $request, JobOffer $jobOffer): Response
     {
         if ($this->isCsrfTokenValid('delete'.$jobOffer->getId(), $request->request->get('_token'))) {

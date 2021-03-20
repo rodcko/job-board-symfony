@@ -13,7 +13,6 @@ class JobOfferType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('compnay')
         ;
     }
 
